@@ -1,26 +1,61 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { connect } from 'react-redux';
+import action from './action';
 
-function App() {
+function App({
+  pokemonCaught,
+  markCaught,
+  pokemon,
+  searchTerm,
+  searchTermChanged,
+}) {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <section>
+      <h1>Pokemon Go Pokedex</h1>
+
+      <form>
+        <div>
+          <input
+            style={{ width: '100%' }}
+            type="text"
+            name="search"
+            placeholder="Search Pokedex"
+            value={searchTerm}
+            onChange={e => searchTermChanged(e.target.value)}
+          />
+        </div>
+      </form>
+
+      <table style={{ width: '100%' }}>
+        <thead>
+          <tr style={{ textAlign: 'left' }}>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Stage</th>
+            <th>Species</th>
+            <th>Caught?</th>
+          </tr>
+        </thead>
+        <tbody>
+          {pokemon && pokemon.map(thisPokemon => (
+            <tr key={thisPokemon.name}>
+              <td>{thisPokemon.name}</td>
+              <td>{thisPokemon.type}</td>
+              <td>{thisPokemon.stage}</td>
+              <td>{thisPokemon.species}</td>
+              <td>
+                {pokemonCaught.includes(thisPokemon.name) ? (
+                  'Caught!'
+                ) : (
+                  <button type="button" onClick={() => markCaught(thisPokemon.name)}>Capture</button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
   );
 }
 
-export default App;
+export default connect(store => store, action)(App);
